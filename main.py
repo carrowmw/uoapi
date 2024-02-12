@@ -11,11 +11,12 @@ from data_processing.process_sensor_data import (
     get_all_sensors_data_parallel,
     print_sensor_request_metrics,
 )
+
 from data_processing.process_missing_data import (
     save_daily_counts_dataframes,
     get_daily_counts_dataframes,
 )
-from visualisation.missing_data_dashboard import create_dashboard
+from visualisation.app import create_dashboard
 
 # Bounding box
 MIN_LON = -1.6226
@@ -31,7 +32,7 @@ sensors_df = json_to_dataframe(sensors_json["sensors"])
 print(f"Length of Sensors: {len(sensors_df)}")
 
 # Data
-LAST_N_DAYS = 20
+LAST_N_DAYS = 365
 params = {"last_n_days": LAST_N_DAYS}
 series_of_sensor_names = sensors_df["Sensor Name"]
 list_of_dataframes = get_all_sensors_data_parallel(series_of_sensor_names, params)
