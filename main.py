@@ -2,6 +2,9 @@
 This script orchestrates the API requests and data processing
 """
 
+import webbrowser
+
+from threading import Timer
 
 from utils.polygon_utils import create_wkb_polygon
 
@@ -31,7 +34,7 @@ sensors_df = json_to_dataframe(sensors_json["sensors"])
 print(f"Length of Sensors: {len(sensors_df)}")
 
 # Data
-LAST_N_DAYS = 20
+LAST_N_DAYS = 365
 params = {"last_n_days": LAST_N_DAYS}
 series_of_sensor_names = sensors_df["Sensor Name"]
 list_of_dataframes = get_all_sensors_data_parallel(series_of_sensor_names, params)
@@ -47,4 +50,17 @@ dashboard_app = create_dashboard(
 
 # Run the web app
 if __name__ == "__main__":
-    dashboard_app.run_server(debug=True)
+    # Define the host and port for the app
+    host = "127.0.0.1"
+    port = 8050
+    url = f"http://{host}:{port}"
+
+    # Function to open a web browser to the app's URL
+    def open_browser():
+        webbrowser.open_new(url)
+
+    # Timer to delay the opening of the web browser until after the server starts
+    Timer(1, open_browser).start()
+
+    # Run the server with specified host and port
+    dashboard_app.run_server(debug=True, host=host, port=port)
