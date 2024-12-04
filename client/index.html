@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://carrowmw.github.io/uoapi/client/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>API Client - Urban Observatory API (uoapi) Documentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "API Client";
+        var mkdocs_page_input_path = "client.md";
+        var mkdocs_page_url = "/uoapi/client/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/markdown.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Urban Observatory API (uoapi) Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">API Client</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#apiconfig">APIConfig</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#attributes">Attributes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#timesliceparams">TimeSliceParams</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#attributes_1">Attributes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#locationparams">LocationParams</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#attributes_2">Attributes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sensorparams">SensorParams</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#attributes_3">Attributes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#apiclient">APIClient</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#initialization">Initialization</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#core-methods">Core Methods</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#configuration-methods">Configuration Methods</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#metadata-methods">Metadata Methods</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#dataframe-methods">DataFrame Methods</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic Usage</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#logging">Logging</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Urban Observatory API (uoapi) Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">API Client</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/carrowmw/uoapi/edit/master/docs/client.md">Edit on uoapi</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="api-client-documentation">API Client Documentation</h1>
+<h2 id="overview">Overview</h2>
+<p>The API Client module provides a robust interface for interacting with the Urban Observatory API. It handles configuration management, request handling, and data processing for sensor data retrieval and analysis.</p>
+<h2 id="classes">Classes</h2>
+<h3 id="apiconfig">APIConfig</h3>
+<p>A dataclass that holds configuration settings for the API client.</p>
+<h4 id="attributes">Attributes</h4>
+<ul>
+<li><code>base_url</code> (str): Base URL for the API (default: "https://newcastle.urbanobservatory.ac.uk/api/v1.1")</li>
+<li><code>timeout</code> (int): Request timeout in milliseconds (default: 100000)</li>
+<li><code>time_slice</code> (Optional[TimeSliceParams]): Time-related parameters</li>
+<li><code>location</code> (Optional[LocationParams]): Location-related parameters</li>
+<li><code>sensor</code> (Optional[SensorParams]): Sensor-related parameters</li>
+</ul>
+<h3 id="timesliceparams">TimeSliceParams</h3>
+<p>A dataclass for time-related query parameters.</p>
+<h4 id="attributes_1">Attributes</h4>
+<ul>
+<li><code>last_n_days</code> (Optional[int]): Number of days to look back</li>
+<li><code>starttime</code> (Optional[str]): Start time for data retrieval</li>
+<li><code>endtime</code> (Optional[str]): End time for data retrieval</li>
+</ul>
+<h3 id="locationparams">LocationParams</h3>
+<p>A dataclass for location-related query parameters.</p>
+<h4 id="attributes_2">Attributes</h4>
+<ul>
+<li><code>polygon_wkb</code> (Optional[str]): WKB representation of a polygon</li>
+<li><code>bbox_p1_x</code> (Optional[float]): Bounding box point 1 X coordinate</li>
+<li><code>bbox_p1_y</code> (Optional[float]): Bounding box point 1 Y coordinate</li>
+<li><code>bbox_p2_x</code> (Optional[float]): Bounding box point 2 X coordinate</li>
+<li><code>bbox_p2_y</code> (Optional[float]): Bounding box point 2 Y coordinate</li>
+</ul>
+<h3 id="sensorparams">SensorParams</h3>
+<p>A dataclass for sensor-related query parameters.</p>
+<h4 id="attributes_3">Attributes</h4>
+<ul>
+<li><code>sensor_type</code> (Optional[str]): Type of sensor</li>
+<li><code>theme</code> (Optional[str]): Theme category</li>
+<li><code>broker</code> (Optional[str]): Broker name</li>
+<li><code>data_variable</code> (Optional[str]): Data variable name</li>
+</ul>
+<h3 id="apiclient">APIClient</h3>
+<p>Main class for interacting with the Urban Observatory API.</p>
+<h4 id="initialization">Initialization</h4>
+<pre><code class="language-python">client = APIClient(config_path: Optional[str] = None)
+</code></pre>
+<h4 id="core-methods">Core Methods</h4>
+<h5 id="get_raw_sensor_data">get_raw_sensor_data</h5>
+<p>Retrieves raw sensor data with configurable parameters.</p>
+<pre><code class="language-python">def get_raw_sensor_data(
+self,
+last_n_days: Optional[int] = None,
+starttime: Optional[str] = None,
+endtime: Optional[str] = None,
+polygon_wkb: Optional[str] = None,
+bbox_p1_x: Optional[float] = None,
+bbox_p1_y: Optional[float] = None,
+bbox_p2_x: Optional[float] = None,
+bbox_p2_y: Optional[float] = None,
+sensor_type: Optional[str] = None,
+theme: Optional[str] = None,
+broker: Optional[str] = None,
+data_variable: Optional[str] = None
+) -&gt; Dict[str, Any]
+</code></pre>
+<h5 id="analyze_json">analyze_json</h5>
+<p>Analyzes the JSON structure of raw sensor data.</p>
+<pre><code class="language-python">def analyze_json(
+self,
+sensor_type: Optional[str] = None,
+theme: Optional[str] = None,
+broker: Optional[str] = None,
+data_variable: Optional[str] = None
+) -&gt; Optional[Dict[str, Any]]
+</code></pre>
+<h4 id="configuration-methods">Configuration Methods</h4>
+<h5 id="_update_config_explicitly">_update_config_explicitly</h5>
+<p>Internal method to update configuration parameters.</p>
+<pre><code class="language-python">def update_config_explicitly(
+self,
+time_slice_params: Optional[Dict] = None,
+location_params: Optional[Dict] = None,
+sensor_params: Optional[Dict] = None
+) -&gt; None
+</code></pre>
+<h4 id="metadata-methods">Metadata Methods</h4>
+<h5 id="store_metadata">store_metadata</h5>
+<p>Caches metadata from the API and saves it to files.</p>
+<h5 id="print_formatted_metadata">print_formatted_metadata</h5>
+<p>Prints formatted metadata from cached files.</p>
+<h4 id="dataframe-methods">DataFrame Methods</h4>
+<h5 id="get_dataframe">get_dataframe</h5>
+<p>Converts raw sensor data to a pandas DataFrame.</p>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="basic-usage">Basic Usage</h3>
+<pre><code class="language-python"># Initialize client
+client = APIClient()
+# Get raw sensor data
+data = client.get_raw_sensor_data(
+theme=&quot;Traffic&quot;,
+last_n_days=7
+)
+
+# Analyze JSON structure
+analysis = client.analyze_json(theme=&quot;Traffic&quot;)
+
+# Update configuration explicitly
+client.update_config_explicitly(
+time_slice_params={&quot;last_n_days&quot;: 7},
+sensor_params={&quot;theme&quot;: &quot;Traffic&quot;}
+)
+# Get data with updated config
+data = client.get_raw_sensor_data()
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<p>The module includes comprehensive error handling through the <code>APIError</code> class, which captures and logs various types of errors:
+- HTTP errors
+- Connection errors
+- Timeout errors
+- JSON decode errors</p>
+<h2 id="logging">Logging</h2>
+<p>The module uses Python's built-in logging system to provide detailed information about:
+- Configuration changes
+- API requests
+- Error conditions
+- Data processing steps</p>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>requests</li>
+<li>pandas</li>
+<li>logging</li>
+<li>yaml</li>
+<li>json</li>
+<li>dataclasses</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/carrowmw/uoapi" class="fa fa-code-fork" style="color: #fcfcfc"> uoapi</a>
+        </span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
