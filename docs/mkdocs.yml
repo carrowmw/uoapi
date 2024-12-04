@@ -1,0 +1,14 @@
+site_name: Urban Observatory API (uoapi) Documentation
+theme:
+  name: 'readthedocs'
+  hljs_languages:
+    - yaml
+    - python
+    - bash
+    - json
+    - markdown
+  color_mode: dark
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - API Client: client.md
