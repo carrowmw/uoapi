@@ -1,6 +1,6 @@
 # Urban Observatory API Client
 
-A robust Python client for interacting with the Newcastle Urban Observatory API (v1.1). This package provides a comprehensive interface for accessing and analyzing urban sensor data with built-in caching, configuration management, and data analysis capabilities. Package documentation, installation instructions and examples can be found at [TODO](TODO)   
+A robust Python client for interacting with the Newcastle Urban Observatory API (v1.1). This package provides a comprehensive interface for accessing and analyzing urban sensor data with built-in caching, configuration management, and data analysis capabilities. Package documentation, installation instructions and examples can be found at [https://carrowmw.github.io/uoapi/](https://carrowmw.github.io/uoapi/)   
 
 ## Installation
 
