@@ -1,0 +1,25 @@
+base_url: "https://newcastle.urbanobservatory.ac.uk/api/v1.1"
+timeout: 100000
+
+time_slice:
+  last_n_days: 2
+  starttime: null
+  endtime: null
+
+location:
+  polygon_wkb: null
+  bbox_p1_x: null
+  bbox_p1_y: null
+  bbox_p2_x: null
+  bbox_p2_y: null
+
+sensor:
+  sensor_type: null
+  theme: Traffic
+  broker: null
+  data_variable: null
+
+cache:
+  enabled: true
+  directory: "database/cache"
+  max_age: 3600  # Cache expiration in seconds
