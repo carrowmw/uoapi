@@ -12,3 +12,8 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - API Client: client.md
+
+# GitHub Pages
+repo_url: https://github.com/carrowmw/uoapi
+repo_name: uoapi
+site_url: https://carrowmw.github.io/uoapi/
