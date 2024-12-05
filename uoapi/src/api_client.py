@@ -75,6 +75,48 @@ class ConfigLoader:
 
         return APIConfig(**base_config)
 
+    @staticmethod
+    def create_default_config(config_path: str = "./config.yml") -> None:
+        """Create a default configuration file at the specified path."""
+        default_config = {
+            "base_url": "https://newcastle.urbanobservatory.ac.uk/api/v1.1",
+            "timeout": 100000,
+            "time_slice": {
+                "last_n_days": 2,
+                "starttime": None,
+                "endtime": None
+            },
+            "location": {
+                "polygon_wkb": None,
+                "bbox_p1_x": None,
+                "bbox_p1_y": None,
+                "bbox_p2_x": None,
+                "bbox_p2_y": None
+            },
+            "sensor": {
+                "sensor_type": None,
+                "theme": "Traffic",
+                "broker": None,
+                "data_variable": None
+            },
+            "cache": {
+                "enabled": True,
+                "directory": "database/cache",
+                "max_age": 3600
+            }
+        }
+        
+        path = Path(config_path)
+        if path.exists():
+            logger.warning(f"Configuration file already exists at {config_path}")
+            return
+        
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, 'w') as f:
+            yaml.dump(default_config, f, sort_keys=False)
+        
+        logger.info(f"Default configuration file created at {config_path}")
+
 class APIEndpoints:
     """API endpoint definitions"""
     SENSORS = "/sensors/json/"
@@ -177,9 +219,15 @@ def cached_method(func: Callable) -> Callable:
 
 class APIClient:
     def __init__(self, config_path: Optional[str] = None):
+        """
+        Initialize the API client with optional configuration path.
+        
+        Args:
+            config_path: Path to the configuration file. If None, uses default configuration.
+        """
+        self.config_path = config_path
         self.config = ConfigLoader.load_config(config_path) if config_path else APIConfig()
-        if config_path:
-            assert os.path.exists(config_path), f"Config file {config_path} does not exist"
+        logger.info(f"Initialized API client with {'custom' if config_path else 'default'} configuration")
         self.endpoints = APIEndpoints()
         self.session = requests.Session()
         
@@ -379,54 +427,70 @@ class APIClient:
                            data_variable: Optional[str] = None,
                            show_output: bool = False) -> Dict[str, Any]:
         """Get raw sensor data with all configured parameters"""
+        try:        
+            # Update configuration with provided parameters
+            self._update_config_explicitly(
+                time_slice_params={
+                    'last_n_days': last_n_days,
+                    'starttime': starttime,
+                    'endtime': endtime
+                },
+                location_params={
+                    'polygon_wkb': polygon_wkb,
+                    'bbox_p1_x': bbox_p1_x,
+                    'bbox_p1_y': bbox_p1_y,
+                    'bbox_p2_x': bbox_p2_x,
+                    'bbox_p2_y': bbox_p2_y
+                },
+                sensor_params={
+                    'sensor_type': sensor_type,
+                    'theme': theme,
+                    'broker': broker,
+                    'data_variable': data_variable
+                },
+                show_output=show_output
+            )
+            
+            # Build query parameters
+            params = self._build_query_params(
+                include_time=True,
+                include_location=True,
+                include_sensor=True
+            )
+            
+            # Check if any required parameters are present in the final params
+            if not any([
+                params.get('sensor_type'),
+                params.get('theme'),
+                params.get('data_variable')
+            ]):
+                raise APIError("At least one of sensor_type, theme, or data_variable is required")
+                
+            response = self._make_request(self.endpoints.RAW_SENSOR_DATA, params)
+            return self._handle_json_response(response)
         
-        self._update_config_explicitly(
-            time_slice_params={
-                'last_n_days': last_n_days,
-                'starttime': starttime,
-                'endtime': endtime
-            },
-            location_params={
-                'polygon_wkb': polygon_wkb,
-                'bbox_p1_x': bbox_p1_x,
-                'bbox_p1_y': bbox_p1_y,
-                'bbox_p2_x': bbox_p2_x,
-                'bbox_p2_y': bbox_p2_y
-            },
-            sensor_params={
-                'sensor_type': sensor_type,
-                'theme': theme,
-                'broker': broker,
-                'data_variable': data_variable
-            },
-            show_output=show_output
-        )
-        
-        params = self._build_query_params(
-            include_time=True,
-            include_location=True,
-            include_sensor=True
-        )
-        
-        # Ensure at least one required parameter is present
-        if not any([params.get('sensor_type'), params.get('theme'), params.get('data_variable')]):
-            raise APIError("At least one of sensor_type, theme, or data_variable is required")
-        
-        response = self._make_request(self.endpoints.RAW_SENSOR_DATA, params)
-        if show_output:
-            print(f"DEBUG: Raw sensor data: {True if self._handle_json_response(response) else False}")
-        return self._handle_json_response(response)
+        except Exception as e:
+            if isinstance(e, APIError):
+                raise
+            logger.error(f"Error getting raw sensor data: {e}")
+            raise APIError(f"Error getting raw sensor data: {e}") from e
 
     def get_individual_raw_sensor_data(self, sensor_name: str) -> Dict[str, Any]:
         """Get raw sensor data for a specific sensor"""
-        params = self._build_query_params(
-            include_time=True,
-            include_location=False,
-            include_sensor=True
-        )
-        endpoint = self.endpoints.INDIVIDUAL_RAW_SENSOR_DATA.format(sensor_name=sensor_name)
-        response = self._make_request(endpoint, params)
-        return self._handle_json_response(response)
+        try:
+            params = self._build_query_params(
+                include_time=True,
+                include_location=False,
+                include_sensor=True
+            )
+            endpoint = self.endpoints.INDIVIDUAL_RAW_SENSOR_DATA.format(sensor_name=sensor_name)
+            response = self._make_request(endpoint, params)
+            return self._handle_json_response(response)
+        except APIError as e:
+            raise e
+        except Exception as e:
+            logger.error(f"Error getting individual raw sensor data: {e}")
+            raise APIError(f"Error getting individual raw sensor data: {e}") from e
 
     # Metadata Methods
     def get_themes(self) -> Dict[str, Any]:
@@ -530,20 +594,41 @@ class APIClient:
     # Analysis Methods
     @cached_method
     def analyze_json(self, 
-                    sensor_type: Optional[str] = None,
-                    theme: Optional[str] = None,
-                    broker: Optional[str] = None,
-                    data_variable: Optional[str] = None,
-                    show_output: bool = False) -> Optional[Dict[str, Any]]:
+                           last_n_days: Optional[int] = None,
+                           starttime: Optional[str] = None,
+                           endtime: Optional[str] = None,
+                           polygon_wkb: Optional[str] = None,
+                           bbox_p1_x: Optional[float] = None,
+                           bbox_p1_y: Optional[float] = None,
+                           bbox_p2_x: Optional[float] = None,
+                           bbox_p2_y: Optional[float] = None,
+                           sensor_type: Optional[str] = None,
+                           theme: Optional[str] = None,
+                           broker: Optional[str] = None,
+                           data_variable: Optional[str] = None,
+                           show_output: bool = False) -> Dict[str, Any]:
         """Analyze JSON structure of raw sensor data"""
         try:
             self._update_config_explicitly(
+                time_slice_params={
+                    'last_n_days': last_n_days,
+                    'starttime': starttime,
+                    'endtime': endtime
+                },
+                location_params={
+                    'polygon_wkb': polygon_wkb,
+                    'bbox_p1_x': bbox_p1_x,
+                    'bbox_p1_y': bbox_p1_y,
+                    'bbox_p2_x': bbox_p2_x,
+                    'bbox_p2_y': bbox_p2_y
+                },
                 sensor_params={
                     'sensor_type': sensor_type,
                     'theme': theme,
                     'broker': broker,
                     'data_variable': data_variable
                 },
+
                 show_output=show_output
             )
             
@@ -584,21 +669,12 @@ class APIClient:
         """Clear all cached data"""
         self.cache_manager.clear()
 
-def main():
-    try:
-        client = APIClient("api/config.yml")
-        # This will now use the config from config.yml
-        # client.analyze_json()
-        # client.store_metadata()
-        # client.print_formatted_metadata()
-        # client.get_raw_sensor_data()
-        # client.get_flattend_measurements()
-        # client.get_list_of_sensor_names()
-        client.get_raw_sensor_data(theme="Seismic", starttime="20190312", endtime="20190319", show_output=True)
-    except APIError as e:
-        logger.error(f"API Error: {e}")
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-
-if __name__ == "__main__":
-    main()
+    @classmethod
+    def create_config(cls, config_path: str = "./config.yml") -> None:
+        """
+        Create a default configuration file at the specified path.
+        
+        Args:
+            config_path: Path where the configuration file should be created.
+        """
+        ConfigLoader.create_default_config(config_path)

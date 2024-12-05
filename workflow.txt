@@ -1,0 +1,14 @@
+# Update the version number
+poetry version patch
+
+# Build and publish the package
+poetry build
+poetry publish
+
+
+# Rebuild docker image
+docker build -t uoapi:latest .
+
+# Push docker image
+docker login
+docker push carrowmw/uoapi:latest
