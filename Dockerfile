@@ -37,15 +37,15 @@ COPY pyproject.toml poetry.lock ./
 # Install dependencies (utilize Docker cache layer)
 RUN poetry install $([ "$API_CLIENT_ENV" = "production" ] && echo "--no-dev") --no-root
 
-# Add non-root user so that the package can be installed without root permissions
-RUN adduser --disabled-password --gecos "" appuser
-USER appuser
-
 # Copy the package code
 COPY . .
 
 # Install the package itself
 RUN poetry install --only-root
+
+# Add non-root user so that the package can be installed without root permissions
+RUN adduser --disabled-password --gecos "" appuser
+USER appuser
 
 # Default command (can be overridden)
 CMD ["poetry", "run", "python", "-m", "uoapi"]
