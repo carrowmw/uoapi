@@ -17,3 +17,4 @@ coverage.xml
 *.log
 .pytest_cache
 .mypy_cache
+cache
