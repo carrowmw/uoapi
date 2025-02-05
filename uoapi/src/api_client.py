@@ -1,20 +1,21 @@
-# api/api_client.py
+# src/api_client.py
 
 import os
-from typing import Dict, Any, Optional, List
-import requests
 import json
-import pandas as pd
 import logging
-import yaml
 from pathlib import Path
-from dataclasses import dataclass
-from ..utils.data_getter import JSONAnalyzer, format_analysis
-from functools import lru_cache
 from datetime import datetime, timedelta
 import hashlib
 import pickle
-from typing import Optional, Dict, Any, Callable
+from typing import Optional, Dict, Any, Callable, List
+from dataclasses import dataclass
+import asyncio
+import requests
+import yaml
+import pandas as pd
+from .async_api_client import AsyncAPIConfig, AsyncAPIClient
+from ..utils.data_getter import JSONAnalyzer, format_analysis
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -566,6 +567,22 @@ class APIClient:
         except Exception as e:
             logger.error(f"Error getting individual raw sensor data: {e}")
             raise APIError(f"Error getting individual raw sensor data: {e}") from e
+
+    def get_sensor_data_batch(
+        self, sensor_names: List[str], last_n_days: int = 1
+    ) -> Dict[str, Any]:
+        """
+        Batch fetch sensor data using async client
+        """
+
+        async def _run_async():
+            async_config = AsyncAPIConfig(
+                base_url=self.config.base_url, timeout=self.config.timeout
+            )
+            async with AsyncAPIClient(async_config) as client:
+                return await client.get_sensor_data_batch(sensor_names, last_n_days)
+
+        return asyncio.run(_run_async())
 
     # Metadata Methods
     def get_themes(self) -> Dict[str, Any]:

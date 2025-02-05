@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uoapi"
-version = "0.2.1"
+version = "0.2.2"
 description = "A robust Python client for interacting with the Newcastle Urban Observatory API (v1.1). This package provides a comprehensive interface for accessing and analyzing urban sensor data with built-in caching, configuration management, and data analysis capabilities."
 authors = ["carrowmw <c.morris-wiltshire@newcastle.ac.uk>"]
 license = "MIT"
@@ -11,6 +11,7 @@ python = "^3.10"
 pandas = "^2.2.3"
 requests = "^2.32.3"
 pyyaml = "^6.0.2"
+aiohttp = "^3.11.11"
 
 [tool.poetry.group.dev.dependencies]
 mkdocs = "^1.6.1"
